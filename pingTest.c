@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define DEBUG
+//#define DEBUG
 #define LINE_MAX 100
 
 void menu()
@@ -14,13 +14,14 @@ void menu()
 
 void menu2()
 {
-	printf("Test another server? (1 yes; 2 no)");
+	printf("Test another server? (1 yes; 2 no)\n");
 }
 
 void menu3()
 {
 	printf("Please enter the digit corresponding to your operating system.\n");
-	printf("Linux(1), Windows(2), Mac(3). [Quit(4)]\n");
+	printf("Four pings(1), Looped pings(2), Mac(3). [Quit(4)]\n");
+	printf("[(1) and (2) work for windows and Linux]\n");
 }
 
 void menu4()
@@ -64,18 +65,21 @@ char* checkValid()
 
 void pingTest(int OS)
 {
-	int locationID, iterations=0;
+	int locationID, iterations=0;// broke=0;
 	char IP[LINE_MAX];
+	char temp[LINE_MAX];
+	char temp2[LINE_MAX];
+	char *end;
+	char buf[LINE_MAX];
 	switch(OS)
 	{
-		case 1: char temp[LINE_MAX] = "ping";
+		case 1: strcpy(temp, "ping ");//4 pings
 		break;
-		case 2: char temp[LINE_MAX] = "ping";
-		char temp2[LINE_MAX];
+		case 2: strcpy(temp, "ping ");//Looped
+		strcpy(temp2, " -t");
 		break;
 		//mac work in progress
-		case 3: char temp[LINE_MAX] = "ping";
-		char temp2[LINE_MAX] = "-t";
+		case 3: //char temp[LINE_MAX] = "ping ";//mac
 		break;
 		default:
 		break;
@@ -90,18 +94,84 @@ void pingTest(int OS)
 		
 		if(!fgets(buf, sizeof buf, stdin)) {
 			printf("Error getting buffer.\n");
-			broke=1;
+			//broke=1;
 		}
 		// remove \n
 		buf[strlen(buf) - 1] = 0;
 
-		OS = strtol(buf, &end, 10);
+		locationID = strtol(buf, &end, 10);
 		iterations++;
-	}while(end != buf + strlen(buf) || (OS>0 && OS<23));
+	}while(end != buf + strlen(buf) || (OS<=0 && OS>=23));
 	iterations=0;
 
-	
-	
+	switch(locationID)
+	{
+		case 1: strcpy(IP, "syd.valve.net");
+		break;
+		case 2: strcpy(IP, "200.73.67.1");;
+		break;
+		case 3: strcpy(IP, "dxb.valve.net");
+		break;
+		case 4: strcpy(IP, "vie.valve.net");
+		break;
+		case 5: strcpy(IP, "185.25.182.1");
+		break;
+		case 6: strcpy(IP, "lux.valve.net");
+		break;
+		case 7: strcpy(IP, "146.66.158.1");
+		break;
+		case 8: strcpy(IP, "116.202.224.146");
+		break;
+		case 9: strcpy(IP, "191.98.144.1");
+		break;
+		case 10: strcpy(IP, "sto.valve.net");
+		break;
+		case 11: strcpy(IP, "185.25.180.1");
+		break;
+		case 12: strcpy(IP, "sgp-1.valve.net");
+		break;
+		case 13: strcpy(IP, "sgp-2.valve.net");
+		break;
+		case 14: strcpy(IP, "cpt-1.valve.net");
+		break;
+		case 15: strcpy(IP, "197.80.200.1");
+		break;
+		case 16: strcpy(IP, "197.84.209.1");
+		break;
+		case 17: strcpy(IP, "196.38.180.1");
+		break;
+		case 18: strcpy(IP, "gru.valve.net");
+		break;
+		case 19: strcpy(IP, "209.197.25.1");
+		break;
+		case 20: strcpy(IP, "209.197.29.1");
+		break;
+		case 21: strcpy(IP, "iad.valve.net");
+		break; 
+		case 22: strcpy(IP, "eat.valve.net");
+		break;
+		
+	}
+
+	if(OS==1) {
+		strcat(temp, IP);
+		printf("Please wait for the pinging to complete...\n");
+		#ifdef DEBUG
+		printf("%s\n", temp);
+		#endif
+	}
+	else if (OS==2) {
+		strcat(temp, IP); 
+		strcat(temp, temp2);
+		printf("(Ctrl + c will end the loop)\n");
+		#ifdef DEBUG
+		printf("%s\n", temp);
+		#endif
+	}
+	else
+		strcat(temp, IP);
+
+	system(temp);
 
 
 	//might implement threads for different applications 
@@ -117,7 +187,7 @@ int main()
 {
 	char *end;
 	char buf[LINE_MAX];
-	int OS, broke = 0, iterations=0, completedTasks=0;
+	int OS, iterations=0, completedTasks=0;//broke = 0
 
 	menu();
 
@@ -129,13 +199,13 @@ int main()
 			if(iterations>0) {
 				printf("Please enter an integer for 1-4.\n");
 				if(iterations>2)
-					printf("If on Linux type 1, on Windows type 2, on Mac type 3. (4 to quit)\n");
+					printf("If four pings type 1, if looped type 2, on Mac type 3. (4 to quit)\n");
 			}
 
 			completedTasks++;
 			if (!fgets(buf, sizeof buf, stdin)) {
 				printf("Error getting buffer.\n");
-				broke=1;
+				//broke=1;
 			}
 			// remove \n
 			buf[strlen(buf) - 1] = 0;
@@ -158,7 +228,7 @@ int main()
 			printf("Ending program.\n");
 			return 0;
 		}
-
+		pingTest(OS);
 		menu2();
 		completedTasks++;
 
@@ -172,7 +242,7 @@ int main()
 			
 			if(!fgets(buf, sizeof buf, stdin)) {
 				printf("Error getting buffer.\n");
-				broke=1;
+				//broke=1;
 			}
 			// remove \n
 			buf[strlen(buf) - 1] = 0;
@@ -182,7 +252,10 @@ int main()
 		}while(end != buf + strlen(buf) || (OS!=1 && OS!=2));
 		iterations=0;
 		if(OS==2)
+		{
+			printf("Ending program.\n");
 			break;
+		}
 	}
 	return 0;
 }
