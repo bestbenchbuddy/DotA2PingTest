@@ -1,4 +1,6 @@
 //DotaPingTest c
+//Created by Nicholas Bastian (BestBenchBuddy)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
