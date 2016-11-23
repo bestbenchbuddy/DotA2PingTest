@@ -1,2 +1,2 @@
 # DotA2PingTest
-This program will test a computers Ping with any of the 22 DotA 2 servers.
+This program will ping any of the 22 DotA 2 servers.
